@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>📈 Smart Stock Predictor</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <style>
+    body {
+      background: #f5f7fa;
+      padding-top: 50px;
+    }
+    .container {
+      max-width: 900px;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .headline {
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>🔮 Smart Stock Prediction (Today)</h2>
+    <form method="POST" class="mb-4">
+      <div class="mb-3">
+        <label class="form-label">Enter NSE Stock Symbol (e.g. RELIANCE, INFY)</label>
+        <input type="text" name="stock" class="form-control" required />
+      </div>
+      <button type="submit" class="btn btn-primary">Predict</button>
+    </form>
+
+    {% if error %}
+      <div class="alert alert-danger">{{ error }}</div>
+    {% endif %}
+
+    {% if result %}
+      <h4>📊 Prediction for {{ result.stock }} on {{ result.date }}</h4>
+      <ul>
+        <li>Prophet Estimated Price: ₹{{ result.yhat }}</li>
+        <li>Adjusted Price (with sentiment): ₹{{ result.adjusted_yhat }}</li>
+        <li>📉 Lower Range: ₹{{ result.yhat_lower }}</li>
+        <li>📈 Upper Range: ₹{{ result.yhat_upper }}</li>
+        <li>🧠 News Sentiment Score: {{ result.sentiment }}</li>
+      </ul>
+
+      <h5 class="mt-4">📰 Latest Headlines</h5>
+      <ul>
+        {% for h in result.headlines %}
+          <li class="headline">{{ h }}</li>
+        {% endfor %}
+      </ul>
+
+      <h5 class="mt-4">🌍 Market Indicators</h5>
+      <ul>
+        {% for k, v in result.indicators.items() %}
+          <li>{{ k }}: {{ v }}</li>
+        {% endfor %}
+      </ul>
+
+      <h5 class="mt-4">🏢 Stock Details</h5>
+      <ul>
+        <li><strong>Company:</strong> {{ result.details.name }}</li>
+        <li><strong>Sector:</strong> {{ result.details.sector }}</li>
+        <li><strong>Industry:</strong> {{ result.details.industry }}</li>
+        <li><strong>Market Cap:</strong> ₹{{ result.details.market_cap }}</li>
+        <li><strong>PE Ratio:</strong> {{ result.details.pe_ratio }}</li>
+        <li><strong>Dividend Yield:</strong> {{ result.details.dividend_yield }}</li>
+        <li><strong>52W High:</strong> ₹{{ result.details.high_52 }}</li>
+        <li><strong>52W Low:</strong> ₹{{ result.details.low_52 }}</li>
+        <li><strong>Day High:</strong> ₹{{ result.details.day_high }}</li>
+        <li><strong>Day Low:</strong> ₹{{ result.details.day_low }}</li>
+        <li><strong>Open:</strong> ₹{{ result.details.open }}</li>
+        <li><strong>Previous Close:</strong> ₹{{ result.details.prev_close }}</li>
+        <li><strong>Beta:</strong> {{ result.details.beta }}</li>
+      </ul>
+
+      <p class="mt-3"><strong>📋 Description:</strong> {{ result.details.description }}</p>
+    {% endif %}
+  </div>
+</body>
+</html>
