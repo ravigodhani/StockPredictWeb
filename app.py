@@ -5,6 +5,7 @@ from vaderSentiment.vaderSentiment import SentimentIntensityAnalyzer
 import pandas as pd
 import feedparser
 import datetime
+import os
 
 app = Flask(__name__)
 
@@ -41,10 +42,6 @@ def prepare_data(symbol):
 
         df = df[[date_col, close_col]].copy()
         df.columns = ['ds', 'y']
-
-        if not isinstance(df['ds'], pd.Series) or not isinstance(df['y'], pd.Series):
-            print("❌ Columns are not Series type.")
-            return None
 
         df['y'] = pd.to_numeric(df['y'], errors='coerce')
         df.dropna(inplace=True)
@@ -135,4 +132,5 @@ def index():
     return render_template('index.html', result=result, error=error)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)
